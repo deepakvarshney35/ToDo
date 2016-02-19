@@ -1,9 +1,11 @@
 package todolist2.deepak.todo;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ListActivity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -31,102 +33,32 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		img=(ImageView)findViewById(R.id.imageView);
+		updateUI();
 		img.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setTitle("Add a task");
-				builder.setMessage("What do you want to do?");
-                final LinearLayout linearLayout=new LinearLayout(MainActivity.this);
-                linearLayout.setOrientation(LinearLayout.VERTICAL);
-				final EditText inputField = new EditText(MainActivity.this);
-                linearLayout.addView(inputField);
-				builder.setView(linearLayout);
-				builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String task = inputField.getText().toString();
-
-                        helper = new TaskDBHelper(MainActivity.this);
-                        SQLiteDatabase db = helper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-
-                        values.clear();
-                        values.put(TaskContract.Columns.TASK, task);
-
-                        db.insertWithOnConflict(TaskContract.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-                        updateUI();
-                    }
-                });
-                builder.setNeutralButton("Add Location", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-				builder.setNegativeButton("Cancel",null);
-
-				builder.create().show();
+				Intent i = new Intent(MainActivity.this, AlarmDetail.class);
+				startActivity(i);
 			}
 		});
-		updateUI();
+
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu,menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.action_add_task:
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Add a task");
-				builder.setMessage("What do you want to do?");
-				final EditText inputField = new EditText(this);
-				builder.setView(inputField);
-				builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialogInterface, int i) {
-						String task = inputField.getText().toString();
-
-						helper = new TaskDBHelper(MainActivity.this);
-						SQLiteDatabase db = helper.getWritableDatabase();
-						ContentValues values = new ContentValues();
-
-						values.clear();
-						values.put(TaskContract.Columns.TASK,task);
-
-						db.insertWithOnConflict(TaskContract.TABLE,null,values,SQLiteDatabase.CONFLICT_IGNORE);
-						updateUI();
-					}
-				});
-
-				builder.setNegativeButton("Cancel",null);
-
-				builder.create().show();
-				return true;
-
-			default:
-				return false;
-		}
-	}
 
 	private void updateUI() {
 		helper = new TaskDBHelper(MainActivity.this);
 		SQLiteDatabase sqlDB = helper.getReadableDatabase();
 		Cursor cursor = sqlDB.query(TaskContract.TABLE,
-				new String[]{TaskContract.Columns._ID, TaskContract.Columns.TASK},
+				new String[]{TaskContract.Columns._ID, TaskContract.Columns.TASK,
+						TaskContract.Columns.DATE, TaskContract.Columns.TIME, TaskContract.Columns.LOC},
 				null, null, null, null, null);
 
 		listAdapter = new SimpleCursorAdapter(
 				this,
 				R.layout.task_view,
 				cursor,
-				new String[]{TaskContract.Columns.TASK},
-				new int[]{R.id.taskTextView},
+				new String[]{TaskContract.Columns.TASK, TaskContract.Columns.DATE,TaskContract.Columns.TIME,TaskContract.Columns.LOC},
+				new int[]{R.id.taskTextView,R.id.date1,R.id.time1,R.id.loc1},
 				0
 		);
 
@@ -147,6 +79,12 @@ public class MainActivity extends ListActivity {
 		helper = new TaskDBHelper(MainActivity.this);
 		SQLiteDatabase sqlDB = helper.getWritableDatabase();
 		sqlDB.execSQL(sql);
+		updateUI();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 		updateUI();
 	}
 }
