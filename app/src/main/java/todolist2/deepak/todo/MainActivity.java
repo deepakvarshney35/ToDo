@@ -1,9 +1,13 @@
 package todolist2.deepak.todo;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ListActivity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -53,7 +57,7 @@ public class MainActivity extends ListActivity {
 		Cursor cursor = sqlDB.query(TaskContract.TABLE,
 				new String[]{TaskContract.Columns._ID, TaskContract.Columns.TASK,
 						TaskContract.Columns.DATE, TaskContract.Columns.TIME, TaskContract.Columns.LOC},
-				null, null, null, null, null);
+				null, null, null, null, TaskContract.Columns.DATE+" DESC");
 
 		listAdapter = new SimpleCursorAdapter(
 				this,
@@ -69,21 +73,30 @@ public class MainActivity extends ListActivity {
 
 	public void onDoneButtonClick(View view) {
 		View v = (View) view.getParent();
+
+		PendingIntent pi;
 		TextView taskTextView = (TextView) v.findViewById(R.id.taskTextView);
 		String task = taskTextView.getText().toString();
+		Cursor c;
+		SQLiteDatabase db=helper.getReadableDatabase();
+		c = db.query(TaskContract.TABLE, null, TaskContract.Columns.TASK+" = ?", new String[]{task}, null, null, null);
+		if(c.moveToFirst()) {
+			String id = c.getString(0);
+			Intent service = new Intent(MainActivity.this, AlarmService.class);
+			service.putExtra("alarmid", id);
+			service.setAction(AlarmService.CANCEL);
+			startService(service);
+			String sql = String.format("DELETE FROM %s WHERE %s = '%s'",
+					TaskContract.TABLE,
+					TaskContract.Columns.TASK,
+					task);
 
 
-
-		String sql = String.format("DELETE FROM %s WHERE %s = '%s'",
-				TaskContract.TABLE,
-				TaskContract.Columns.TASK,
-				task);
-
-
-		helper = new TaskDBHelper(MainActivity.this);
-		SQLiteDatabase sqlDB = helper.getWritableDatabase();
-		sqlDB.execSQL(sql);
-		updateUI();
+			helper = new TaskDBHelper(MainActivity.this);
+			SQLiteDatabase sqlDB = helper.getWritableDatabase();
+			sqlDB.execSQL(sql);
+			updateUI();
+		}
 	}
 
 	@Override

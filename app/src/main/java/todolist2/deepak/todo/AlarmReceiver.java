@@ -43,12 +43,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 		PendingIntent cancelPendingIntent = PendingIntent.getService(context, Integer.parseInt(alarmId), cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(context);
-		mBuilder.setContentTitle("ToDO");
-		mBuilder.setContentText(task);
-		mBuilder.setContentInfo(time);
-		mBuilder.setContentInfo(date);
-		mBuilder.setContentInfo(loc);
-		mBuilder.setTicker("New Message Alert!");
+		mBuilder.setContentTitle(task);
+		mBuilder.setContentText("LOC: "+loc);
+		mBuilder.setContentInfo("TIME: "+time);
+		mBuilder.setContentInfo("DATE: "+date);
+
 		mBuilder.setSmallIcon(R.drawable.plus_pressed);
 		Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		mBuilder.setSound(alarmSound);
