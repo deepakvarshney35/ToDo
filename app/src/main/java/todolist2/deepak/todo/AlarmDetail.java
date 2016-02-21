@@ -92,16 +92,19 @@ public class AlarmDetail extends Activity {
                 String timestr=time.getText().toString();
                 String locstr=loc.getText().toString();
 
-                SQLiteDatabase db = helper.getWritableDatabase();
-                ContentValues values = new ContentValues();
+                if(task.isEmpty() || datestr.isEmpty() || timestr.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Please Enter all Details",Toast.LENGTH_SHORT).show();
+                }else {
+                    SQLiteDatabase db = helper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
 
-                values.clear();
-                Calendar cal = Calendar.getInstance();
+                    values.clear();
+                    Calendar cal = Calendar.getInstance();
 
 
-                    String[] token1=datestr.split("-");
-                    cal.set(Calendar.YEAR,Integer.parseInt(token1[2]));
-                    cal.set(Calendar.MONTH,Integer.parseInt(token1[1])-1);
+                    String[] token1 = datestr.split("-");
+                    cal.set(Calendar.YEAR, Integer.parseInt(token1[2]));
+                    cal.set(Calendar.MONTH, Integer.parseInt(token1[1]) - 1);
                     cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(token1[0]));
 
                     String[] tokens = timestr.split(":"); //hh:mm
@@ -111,22 +114,23 @@ public class AlarmDetail extends Activity {
                     cal.set(Calendar.MILLISECOND, 0);
 
 
-                values.put(TaskContract.Columns.TASK, task);
-                values.put(TaskContract.Columns.DATE, datestr);
-                values.put(TaskContract.Columns.TIME, timestr);
-                values.put(TaskContract.Columns.LOC, locstr);
-                values.put(TaskContract.Columns.DATETIME,String.valueOf(cal.getTimeInMillis()));
+                    values.put(TaskContract.Columns.TASK, task);
+                    values.put(TaskContract.Columns.DATE, datestr);
+                    values.put(TaskContract.Columns.TIME, timestr);
+                    values.put(TaskContract.Columns.LOC, locstr);
+                    values.put(TaskContract.Columns.DATETIME, String.valueOf(cal.getTimeInMillis()));
 
-                Log.d("timeinMillis",cal.getTimeInMillis()+"");
-                long id=db.insertWithOnConflict(TaskContract.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                    Log.d("timeinMillis", cal.getTimeInMillis() + "");
+                    long id = db.insertWithOnConflict(TaskContract.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
 
-                Intent service = new Intent(AlarmDetail.this, AlarmService.class);
-                service.putExtra("alarmid", String.valueOf(id));
-                service.setAction(AlarmService.POPULATE);
-                startService(service);
+                    Intent service = new Intent(AlarmDetail.this, AlarmService.class);
+                    service.putExtra("alarmid", String.valueOf(id));
+                    service.setAction(AlarmService.POPULATE);
+                    startService(service);
 
-                onBackPressed();
+                    onBackPressed();
+                }
             }
         });
 

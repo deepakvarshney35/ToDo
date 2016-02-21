@@ -24,6 +24,7 @@ public class AlarmService extends IntentService {
 	private TaskDBHelper helper;
 	public static final String POPULATE = "POPULATE";
 	public static final String CREATE = "CREATE";
+	public static final String KEEP = "KEEP";
 	public static final String CANCEL = "CANCEL";
 	SQLiteDatabase db;
 	private IntentFilter matcher;
@@ -35,6 +36,7 @@ public class AlarmService extends IntentService {
 
 		matcher.addAction(POPULATE);
 		matcher.addAction(CREATE);
+		matcher.addAction(KEEP);
 		matcher.addAction(CANCEL);
 	}
 
@@ -43,16 +45,19 @@ public class AlarmService extends IntentService {
 
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String action = intent.getAction();
+//		Log.i("action",action);
 		String alarmId = intent.getStringExtra("alarmid");
+		Log.i("alarmccancel",alarmId);
 		helper = new TaskDBHelper(AlarmService.this);
 		db = helper.getReadableDatabase();
 		if (matcher.matchAction(action)) {
 			if (POPULATE.equals(action)) {
 				execute(CREATE, alarmId);
 			}
-			
-			if (CREATE.equals(action)) {
-				execute(CREATE, alarmId);
+
+
+			if(KEEP.equals(action)){
+				nm.cancel(Integer.parseInt(alarmId));
 			}
 			
 			if (CANCEL.equals(action)) {
@@ -83,8 +88,14 @@ public class AlarmService extends IntentService {
 			i = new Intent(this, AlarmReceiver.class);
 
 			i.putExtra(TaskContract.Columns._ID, alarmId);
-
-
+			i.putExtra(TaskContract.Columns.TASK,c.getString(1));
+			i.putExtra(TaskContract.Columns.DATE,c.getString(2));
+			i.putExtra(TaskContract.Columns.TIME,c.getString(3));
+			i.putExtra(TaskContract.Columns.LOC,c.getString(4));
+	//id		Log.d("hehe", c.getString(0));
+	//task		Log.d("hehe",c.getString(1));
+	//date		Log.d("hehe",c.getString(2));
+//time
 			pi = PendingIntent.getBroadcast(this, Integer.parseInt(alarmId), i, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -93,14 +104,15 @@ public class AlarmService extends IntentService {
 			if (CREATE.equals(action)) {
 				if (diff > 0 && diff < Util.YEAR) {
 					if((time-15*60*1000)<=System.currentTimeMillis()){
-						am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15 * 60 * 1000, pi);
+						am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 30 * 60 * 1000, pi);
 					}else{
-						am.setRepeating(AlarmManager.RTC_WAKEUP, time - 15 * 60 * 1000, 15 * 60 * 1000, pi);
+						am.setRepeating(AlarmManager.RTC_WAKEUP, time - 15 * 60 * 1000, 30 * 60 * 1000, pi);
 					}
 				}
 			} else if (CANCEL.equals(action)) {
 				am.cancel(pi);
 				nm.cancel(Integer.parseInt(alarmId));
+
 			}
 		}
 

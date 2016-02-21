@@ -72,10 +72,12 @@ public class MainActivity extends ListActivity {
 		TextView taskTextView = (TextView) v.findViewById(R.id.taskTextView);
 		String task = taskTextView.getText().toString();
 
+
+
 		String sql = String.format("DELETE FROM %s WHERE %s = '%s'",
-						TaskContract.TABLE,
-						TaskContract.Columns.TASK,
-						task);
+				TaskContract.TABLE,
+				TaskContract.Columns.TASK,
+				task);
 
 
 		helper = new TaskDBHelper(MainActivity.this);

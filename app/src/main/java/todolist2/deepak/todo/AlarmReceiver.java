@@ -26,25 +26,35 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		String alarmId = intent.getStringExtra(TaskContract.Columns._ID);
+		String task=intent.getStringExtra(TaskContract.Columns.TASK);
+		String date=intent.getStringExtra(TaskContract.Columns.DATE);
+		String time=intent.getStringExtra(TaskContract.Columns.TIME);
+		String loc=intent.getStringExtra(TaskContract.Columns.LOC);
 		Log.d("alarmId", alarmId + "");
 		Intent snoozeIntent=new Intent(context,AlarmService.class);
-		PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, Integer.parseInt(alarmId), new Intent(), 0);
+		snoozeIntent.setAction(AlarmService.KEEP);
+		snoozeIntent.putExtra("alarmid", alarmId);
+		PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, Integer.parseInt(alarmId), snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
 		Intent cancelIntent=new Intent(context,AlarmService.class);
-		snoozeIntent.setAction(AlarmService.CANCEL);
-		snoozeIntent.putExtra("alarmid",alarmId);
-		PendingIntent cancelPendingIntent = PendingIntent.getService(context, Integer.parseInt(alarmId), cancelIntent, 0);
+		cancelIntent.setAction(AlarmService.CANCEL);
+		cancelIntent.putExtra("alarmid", alarmId);
+		PendingIntent cancelPendingIntent = PendingIntent.getService(context, Integer.parseInt(alarmId), cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(context);
 		mBuilder.setContentTitle("ToDO");
-		mBuilder.setContentText("yoyo");
+		mBuilder.setContentText(task);
+		mBuilder.setContentInfo(time);
+		mBuilder.setContentInfo(date);
+		mBuilder.setContentInfo(loc);
 		mBuilder.setTicker("New Message Alert!");
 		mBuilder.setSmallIcon(R.drawable.plus_pressed);
 		Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		mBuilder.setSound(alarmSound);
 		mBuilder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
 		mBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
-		mBuilder.addAction(R.drawable.plus_pressed,"Snooze",snoozePendingIntent);
+		mBuilder.addAction(R.drawable.snooze,"Snooze",snoozePendingIntent);
 		mBuilder.addAction(R.drawable.plus_unpressed, "Cancel", cancelPendingIntent);
 		Intent notificationIntent=new Intent(context,MainActivity.class);
 
