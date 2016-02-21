@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">ToDo</string>
     <string name="google_app_id">468031262863</string>
+    <!-- Button text -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
+    <string name="server_client_id">468031262863-r1guars62li5us65ff313nj49l59pu5f.apps.googleusercontent.com</string>
 </resources>

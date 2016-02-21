@@ -21,7 +21,9 @@ import android.widget.TextView;
 
 import todolist2.deepak.todo.db.TaskContract;
 import todolist2.deepak.todo.db.TaskDBHelper;
-
+/**
+ * Created by Deepak on 19-Feb-16.
+ */
 
 public class MainActivity extends ListActivity {
 	private ListAdapter listAdapter;
