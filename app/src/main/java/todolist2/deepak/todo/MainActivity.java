@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,30 +74,33 @@ public class MainActivity extends ListActivity {
 
 	public void onDoneButtonClick(View view) {
 		View v = (View) view.getParent();
-
+		String id="";
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pi;
+		Intent i = new Intent(this, AlarmReceiver.class);
 		TextView taskTextView = (TextView) v.findViewById(R.id.taskTextView);
 		String task = taskTextView.getText().toString();
 		Cursor c;
 		SQLiteDatabase db=helper.getReadableDatabase();
-		c = db.query(TaskContract.TABLE, null, TaskContract.Columns.TASK+" = ?", new String[]{task}, null, null, null);
+		c = db.query(TaskContract.TABLE, null, TaskContract.Columns.TASK + " = ?", new String[]{task}, null, null, null);
 		if(c.moveToFirst()) {
-			String id = c.getString(0);
-			Intent service = new Intent(MainActivity.this, AlarmService.class);
-			service.putExtra("alarmid", id);
-			service.setAction(AlarmService.CANCEL);
-			startService(service);
-			String sql = String.format("DELETE FROM %s WHERE %s = '%s'",
-					TaskContract.TABLE,
-					TaskContract.Columns.TASK,
-					task);
-
-
-			helper = new TaskDBHelper(MainActivity.this);
-			SQLiteDatabase sqlDB = helper.getWritableDatabase();
-			sqlDB.execSQL(sql);
-			updateUI();
+			id = c.getString(0);
+			nm.cancel(Integer.parseInt(id));
 		}
+
+		pi = PendingIntent.getBroadcast(this, Integer.parseInt(id), i, PendingIntent.FLAG_UPDATE_CURRENT);
+		am.cancel(pi);
+		String sql = String.format("DELETE FROM %s WHERE %s = '%s'",
+				TaskContract.TABLE,
+				TaskContract.Columns.TASK,
+				task);
+
+
+		helper = new TaskDBHelper(MainActivity.this);
+		SQLiteDatabase sqlDB = helper.getWritableDatabase();
+		sqlDB.execSQL(sql);
+		updateUI();
 	}
 
 	@Override

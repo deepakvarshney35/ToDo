@@ -47,7 +47,7 @@ public class AlarmDetail extends Activity {
     public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
     private DatePickerDialog fromDatePickerDialog;
     TimePickerDialog timePickerDialog;
-    Button save;
+    Button save,pickloc;
     private SimpleDateFormat dateFormatter;
     private SimpleDateFormat timeFormatter;
     @Override
@@ -61,6 +61,7 @@ public class AlarmDetail extends Activity {
         time=(TextView)findViewById(R.id.time);
         loc=(EditText)findViewById(R.id.loc);
         save=(Button)findViewById(R.id.save);
+        pickloc=(Button)findViewById(R.id.locbutton);
         date.setInputType(InputType.TYPE_NULL);
         time.setInputType(InputType.TYPE_NULL);
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
@@ -160,7 +161,7 @@ public class AlarmDetail extends Activity {
                 }
             }
         });*/
-        loc.setOnClickListener(new View.OnClickListener() {
+        pickloc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {

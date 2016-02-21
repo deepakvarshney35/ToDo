@@ -45,9 +45,9 @@ public class AlarmService extends IntentService {
 
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String action = intent.getAction();
-//		Log.i("action",action);
+	//	Log.i("action",action);
 		String alarmId = intent.getStringExtra("alarmid");
-		Log.i("alarmccancel",alarmId);
+	//	Log.d("alarmccancel",alarmId);
 		helper = new TaskDBHelper(AlarmService.this);
 		db = helper.getReadableDatabase();
 		if (matcher.matchAction(action)) {
@@ -55,14 +55,12 @@ public class AlarmService extends IntentService {
 				execute(CREATE, alarmId);
 			}
 
-
 			if(KEEP.equals(action)){
 				nm.cancel(Integer.parseInt(alarmId));
 			}
 			
 			if (CANCEL.equals(action)) {
 				execute(CANCEL, alarmId);
-			//	RemindMe.dbHelper.shred(RemindMe.db);
 			}			
 		}
 	}
@@ -71,7 +69,7 @@ public class AlarmService extends IntentService {
 	 * @param action
 	 * @param args {alarmId, alarmMsgId, startTime, endTime}
 	 */	
-	private void execute(String action, String... args) {		
+	private void execute(String action, String... args) {
 		Intent i;
 		PendingIntent pi;				
 		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -112,6 +110,7 @@ public class AlarmService extends IntentService {
 			} else if (CANCEL.equals(action)) {
 				am.cancel(pi);
 				nm.cancel(Integer.parseInt(alarmId));
+
 
 			}
 		}
