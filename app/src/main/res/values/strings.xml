@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ToDo</string>
     <string name="google_app_id">468031262863</string>
+    <string name="app_id">1559889420993541</string>
     <!-- Button text -->
     <string name="btn_logout_from_google">Logout from Google</string>
     <string name="btn_revoke_access">Revoke Access</string>

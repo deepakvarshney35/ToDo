@@ -34,12 +34,18 @@ public class MainActivity extends ListActivity {
 	private ListAdapter listAdapter;
 	private TaskDBHelper helper;
 	ImageView img;
+	TextView nameTv;
+String name;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		nameTv=(TextView)findViewById(R.id.toolbar_title);
+		Intent intent=getIntent();
+		name=intent.getExtras().getString("name");
 		img=(ImageView)findViewById(R.id.imageView);
+		nameTv.setText(name);
 		updateUI();
 		img.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -107,5 +113,12 @@ public class MainActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		updateUI();
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		//System.exit(0);
+		finish();
 	}
 }
