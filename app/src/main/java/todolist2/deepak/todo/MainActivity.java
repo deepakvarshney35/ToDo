@@ -43,9 +43,13 @@ String name;
 		setContentView(R.layout.activity_main);
 		nameTv=(TextView)findViewById(R.id.toolbar_title);
 		Intent intent=getIntent();
-		name=intent.getExtras().getString("name");
+		if(intent.hasExtra("name")){
+			name=intent.getExtras().getString("name");
+			nameTv.setText(name);
+		}
+
 		img=(ImageView)findViewById(R.id.imageView);
-		nameTv.setText(name);
+
 		updateUI();
 		img.setOnClickListener(new View.OnClickListener() {
 			@Override

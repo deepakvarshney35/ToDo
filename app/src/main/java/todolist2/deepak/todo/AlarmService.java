@@ -45,7 +45,7 @@ public class AlarmService extends IntentService {
 
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String action = intent.getAction();
-	//	Log.i("action",action);
+		Log.i("action",action);
 		String alarmId = intent.getStringExtra("alarmid");
 	//	Log.d("alarmccancel",alarmId);
 		helper = new TaskDBHelper(AlarmService.this);
@@ -57,6 +57,7 @@ public class AlarmService extends IntentService {
 
 			if(KEEP.equals(action)){
 				nm.cancel(Integer.parseInt(alarmId));
+				Log.d("yoy","ypy");
 			}
 			
 			if (CANCEL.equals(action)) {

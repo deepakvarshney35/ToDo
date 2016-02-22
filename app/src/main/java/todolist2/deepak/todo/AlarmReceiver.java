@@ -31,10 +31,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 		String time=intent.getStringExtra(TaskContract.Columns.TIME);
 		String loc=intent.getStringExtra(TaskContract.Columns.LOC);
 		Log.d("alarmId", alarmId + "");
+
 		Intent snoozeIntent=new Intent(context,AlarmService.class);
 		snoozeIntent.setAction(AlarmService.KEEP);
 		snoozeIntent.putExtra("alarmid", alarmId);
-		PendingIntent snoozePendingIntent = PendingIntent.getActivity(context, Integer.parseInt(alarmId), snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent snoozePendingIntent = PendingIntent.getService(context, Integer.parseInt(alarmId), snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
 		Intent cancelIntent=new Intent(context,AlarmService.class);
