@@ -25,7 +25,7 @@ public class LoginMainActivity extends Activity {
     private TextView textView;
     int flag=0;
 
-    private AccessTokenTracker accessTokenTracker;
+    private AccessTokenTracker accessTokenTracker,accessTokenTracker2;
     private ProfileTracker profileTracker;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {

@@ -4,6 +4,7 @@ package todolist2.deepak.todo;
  * Created by Deepak on 20-Feb-16.
  */
 public class Util {
+
     public static final double MIN = 60 * 1000.0;
     public static final double HOUR = 60 * MIN;
     public static final double DAY = 24 * HOUR;
