@@ -26,7 +26,7 @@ public class LoginMainActivity extends Activity {
     int flag=0;
 
     private AccessTokenTracker accessTokenTracker,accessTokenTracker2;
-    private ProfileTracker profileTracker;
+    private ProfileTracker profileTracker,profileTracker2;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
